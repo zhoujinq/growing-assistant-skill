@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Growing Assistant — a skill of skills</title>
+<meta name="description" content="A portable skill that bootstraps a personal, growing AI assistant: profile, workspace, first workflow, correction loop, effort.">
+<style>
+  :root{
+    --bg:#0a0c0d;
+    --bg2:#111517;
+    --ink:#ece9e2;
+    --muted:#9aa3a0;
+    --line:#26302e;
+    --lime:#c9f45b;
+    --blue:#8bd3ff;
+    --paper:#f3efe6;
+    --paper-ink:#171a18;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:48px 48px;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1180px,calc(100% - 40px));margin:0 auto}
+  .mono{font-family:var(--mono)}
+  .muted{color:var(--muted)}
+  .lime{color:var(--lime)}
+  .blue{color:var(--blue)}
+
+  header.nav{
+    position:sticky;top:0;z-index:20;background:rgba(10,12,13,.82);
+    backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:62px;gap:16px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;letter-spacing:.04em}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--lime);box-shadow:0 0 18px rgba(201,244,91,.55)}
+  .nav-links{display:flex;gap:22px;align-items:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-cta{border:1px solid var(--line);padding:8px 12px;border-radius:6px;color:var(--ink)}
+  .nav-cta:hover{border-color:var(--lime);color:var(--lime)}
+
+  .hero{padding:86px 0 56px;display:grid;grid-template-columns:1.02fr .98fr;gap:54px;align-items:center}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--lime);margin:0 0 18px}
+  h1{font-size:clamp(44px,6.4vw,84px);line-height:.96;letter-spacing:-.045em;margin:0 0 24px;font-weight:650}
+  h1 span{color:var(--lime)}
+  .lede{font-size:18px;color:#c6ccc8;max-width:540px;margin:0 0 30px}
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:12px 16px;border-radius:7px;font-family:var(--mono);font-size:12px;border:1px solid var(--line)}
+  .btn-primary{background:var(--lime);color:#0a0c0d;border-color:var(--lime);font-weight:700}
+  .btn-primary:hover{filter:brightness(1.06)}
+  .btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+  .stats{display:flex;gap:26px;flex-wrap:wrap;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .stats b{display:block;color:var(--ink);font-size:18px;font-weight:600;margin-bottom:2px}
+
+  .terminal{border:1px solid #2d3734;border-radius:10px;background:#070909;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.45)}
+  .term-bar{display:flex;align-items:center;gap:8px;padding:11px 14px;border-bottom:1px solid #202927;background:#0d1111}
+  .term-bar i{width:9px;height:9px;border-radius:50%;display:block;background:#3a4441}
+  .term-bar i:nth-child(1){background:#ff6b5f}.term-bar i:nth-child(2){background:#ffcf5c}.term-bar i:nth-child(3){background:#63d68a}
+  .term-title{margin-left:8px;font-family:var(--mono);font-size:11px;color:#7f8b87}
+  .term-body{padding:20px 18px 24px;font-family:var(--mono);font-size:12.5px;line-height:1.75;min-height:420px;white-space:pre-wrap}
+  .term-body .p{color:#6f7c78}
+  .term-body .cmd{color:#e8e6e1}
+  .term-body .ok{color:var(--lime)}
+  .term-body .info{color:var(--blue)}
+  .term-body .warn{color:#ffcf5c}
+  .cursor{display:inline-block;width:8px;height:15px;background:var(--lime);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  section{padding:76px 0;border-top:1px solid var(--line)}
+  .section-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:30px}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--lime);margin:0 0 10px}
+  h2{font-size:clamp(28px,3.6vw,44px);line-height:1.05;letter-spacing:-.03em;margin:0;font-weight:620}
+  .section-head p{max-width:520px;margin:0;color:var(--muted);font-size:14px}
+
+  .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .step{border:1px solid var(--line);border-radius:8px;padding:18px 16px;background:var(--bg2);min-height:190px;transition:.25s ease;cursor:pointer}
+  .step:hover,.step.active{border-color:var(--lime);transform:translateY(-2px);background:#121817}
+  .step .n{font-family:var(--mono);font-size:11px;color:var(--lime);margin-bottom:14px}
+  .step h3{font-size:16px;margin:0 0 8px;letter-spacing:-.01em}
+  .step p{font-size:12.5px;color:var(--muted);margin:0}
+  .step code{font-family:var(--mono);font-size:11px;color:var(--blue)}
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .panel{border-radius:10px;padding:26px;min-height:310px}
+  .panel.bad{background:#151a19;border:1px solid #27302e}
+  .panel.good{background:var(--paper);color:var(--paper-ink);border:1px solid #d7d0c2}
+  .panel .tag{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
+  .panel.bad .tag{color:#e07a6f}.panel.good .tag{color:#3d6b1f}
+  .panel h3{font-size:22px;margin:0 0 14px;letter-spacing:-.02em}
+  .panel ul{margin:0;padding-left:18px}
+  .panel li{font-size:13.5px;margin:9px 0}
+  .panel.bad li{color:#aab3af}
+  .panel.good li{color:#333a35}
+  .panel .quote{margin-top:18px;font-family:var(--mono);font-size:11px;color:#6f7b75;border-top:1px solid #2a3431;padding-top:14px}
+  .panel.good .quote{color:#6b736c;border-color:#d7d0c2}
+
+  .inside{display:grid;grid-template-columns:.9fr 1.1fr;gap:40px;align-items:start}
+  .tree{font-family:var(--mono);font-size:12.5px;line-height:1.9;color:#b9c2be;background:#0d1111;border:1px solid var(--line);border-radius:8px;padding:20px;overflow:auto}
+  .tree .dir{color:var(--blue)}.tree .file{color:#dfe6e1}.tree .note{color:#6f7c78}
+  .inside-copy p{color:var(--muted);font-size:14px;margin:0 0 16px}
+  .inside-copy strong{color:var(--ink)}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:20px}
+  .kpi{border:1px solid var(--line);border-radius:7px;padding:14px}
+  .kpi b{display:block;font-family:var(--mono);font-size:20px;color:var(--lime);margin-bottom:3px}
+  .kpi span{font-size:11.5px;color:var(--muted)}
+
+  .install-box{background:#0d1111;border:1px solid var(--line);border-radius:9px;overflow:hidden;margin-top:24px}
+  .install-head{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .copy{background:transparent;border:1px solid var(--line);color:var(--ink);font-family:var(--mono);font-size:10px;padding:5px 8px;border-radius:4px;cursor:pointer}
+  .copy:hover{border-color:var(--lime);color:var(--lime)}
+  pre.code{margin:0;padding:20px;overflow:auto;font-family:var(--mono);font-size:12.5px;line-height:1.8;color:#dfe6e1}
+  pre.code .c{color:#6f7c78}
+
+  .notes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .note-card{border:1px solid var(--line);border-radius:8px;padding:20px;background:var(--bg2)}
+  .note-card .lab{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--lime);margin-bottom:12px}
+  .note-card h3{font-size:16px;margin:0 0 8px}
+  .note-card p{font-size:12.5px;color:var(--muted);margin:0}
+
+  footer{border-top:1px solid var(--line);padding:28px 0 40px;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+  .foot a:hover{color:var(--lime)}
+
+  @media (max-width:1000px){
+    .hero{grid-template-columns:1fr;gap:36px}
+    .steps{grid-template-columns:repeat(2,1fr)}
+    .inside{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    .wrap{width:min(100% - 28px,1180px)}
+    .hero{padding:56px 0 40px}
+    .steps,.compare,.notes,.kpis{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .term-body{min-height:360px;font-size:11.5px}
+    section{padding:56px 0}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top"><span class="dot"></span> growing-assistant <span class="muted">/ v0.1.0</span></a>
+    <nav class="nav-links">
+      <a href="#loop">Loop</a>
+      <a href="#before-after">Before / after</a>
+      <a href="#inside">Inside</a>
+      <a href="#install">Install</a>
+      <a class="nav-cta" href="https://github.com/zhoujinq/growing-assistant-skill" target="_blank" rel="noreferrer">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap">
+    <section class="hero" style="border-top:0">
+      <div class="hero-copy">
+        <p class="eyebrow">A SKILL OF SKILLS · MIT</p>
+        <h1>Your Agent,<br><span>but it grows.</span></h1>
+        <p class="lede">Give it to your Agent. Answer a few questions. Get a personal assistant with a workspace, a real workflow, and a correction loop that survives the next session.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#install">Install the skill →</a>
+          <a class="btn btn-ghost" href="https://github.com/zhoujinq/growing-assistant-skill" target="_blank" rel="noreferrer">View source ↗</a>
+        </div>
+        <div class="stats">
+          <div><b>5–8</b> questions to start</div>
+          <div><b>1</b> workflow, end-to-end</div>
+          <div><b>1</b> correction → rule → eval</div>
+        </div>
+      </div>
+
+      <div class="terminal" aria-label="Terminal demo">
+        <div class="term-bar"><i></i><i></i><i></i><span class="term-title">~/assistant — growing-assistant</span></div>
+        <pre class="term-body" id="term"></pre>
+      </div>
+    </section>
+  </div>
+
+  <section id="loop">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="kicker">THE LOOP</p>
+          <h2>One loop. Not a platform.</h2>
+        </div>
+        <p>Each step leaves a file. If it is not on disk, it does not exist. That is the whole trick.</p>
+      </div>
+      <div class="steps" id="steps">
+        <div class="step active" data-step="1"><div class="n">01 / PROFILE</div><h3>Ask, don’t assume</h3><p>Who, goals, one repeated task, acceptance, privacy. 5–8 questions, one at a time.</p></div>
+        <div class="step" data-step="2"><div class="n">02 / WORKSPACE</div><h3>Give it a desk</h3><p><code>PROFILE.md</code>, <code>RULES.md</code>, <code>memory/</code>, <code>docs/</code>, <code>evals/</code>. Local, readable, git-friendly.</p></div>
+        <div class="step" data-step="3"><div class="n">03 / FIRST RUN</div><h3>Do one real task</h3><p>An artifact, an evidence file, a handoff. No “here’s a plan” theatre.</p></div>
+        <div class="step" data-step="4"><div class="n">04 / CORRECTION</div><h3>Make it stick</h3><p>“That’s wrong” becomes a numbered rule + an eval case, not a one-off apology.</p></div>
+        <div class="step" data-step="5"><div class="n">05 / EFFORT</div><h3>Choose the budget</h3><p><code>low</code> / <code>medium</code> / <code>high</code>. High means more checks, not more words.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="before-after">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="kicker">BEFORE / AFTER</p>
+          <h2>The second run is the product.</h2>
+        </div>
+        <p>A generic agent answers. A growing assistant cites your files, follows your rules, and shows what changed.</p>
+      </div>
+      <div class="compare">
+        <div class="panel bad">
+          <div class="tag">Generic agent</div>
+          <h3>“Here’s a polished answer.”</h3>
+          <ul>
+            <li>Starts from zero every session.</li>
+            <li>Invents a plausible number.</li>
+            <li>Forgets the correction by tomorrow.</li>
+            <li>No evidence, no rollback.</li>
+          </ul>
+          <div class="quote">chat history ≠ memory</div>
+        </div>
+        <div class="panel good">
+          <div class="tag">Growing assistant</div>
+          <h3>“Here’s the same task, with your rule.”</h3>
+          <ul>
+            <li>Reads <strong>PROFILE.md</strong> and <strong>RULES.md</strong> first.</li>
+            <li>Cites <strong>docs/resume.md#experience</strong>.</li>
+            <li>Rule <strong>R-002</strong> prevents “负责” when it was “协助”.</li>
+            <li>Re-runs <strong>E-002</strong> and shows the diff.</li>
+          </ul>
+          <div class="quote">the correction is in the repo, not in the chat</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="inside">
+    <div class="wrap">
+      <div class="inside">
+        <div>
+          <p class="kicker">INSIDE</p>
+          <h2 style="margin-bottom:18px">A workspace you can read.</h2>
+          <div class="tree">
+<span class="dir">assistant/</span>
+├─ <span class="file">PROFILE.md</span>      <span class="note"># who, goals, privacy</span>
+├─ <span class="file">RULES.md</span>        <span class="note"># one rule per correction</span>
+├─ <span class="file">WORKFLOW.md</span>     <span class="note"># inputs, steps, acceptance</span>
+├─ <span class="dir">memory/</span>         <span class="note"># dated notes, open loops</span>
+├─ <span class="dir">docs/</span>           <span class="note"># read-only source material</span>
+├─ <span class="dir">evals/</span>          <span class="note"># good/bad cases</span>
+├─ <span class="dir">output/</span>         <span class="note"># report + evidence + handoff</span>
+├─ <span class="dir">skills/</span>         <span class="note"># distilled standalone skills</span>
+└─ <span class="dir">private/</span>        <span class="note"># gitignored</span>
+          </div>
+        </div>
+        <div class="inside-copy">
+          <p><strong>No database server.</strong> Markdown + folders. You can read it, edit it, diff it, and put it in Git.</p>
+          <p><strong>No model lock-in.</strong> The skill runs in any Agent that can read/write files and run Python. WorkBuddy, Claude Code, Codex, Pi.</p>
+          <p><strong>No multi-agent ceremony.</strong> One assistant first. Roles are a later option, not the starting point.</p>
+          <div class="kpis">
+            <div class="kpi"><b>0</b><span>external Python packages</span></div>
+            <div class="kpi"><b>3</b><span>gates: profile / first run / growth</span></div>
+            <div class="kpi"><b>2</b><span>example workflows included</span></div>
+            <div class="kpi"><b>1</b><span>command to scaffold</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="kicker">INSTALL</p>
+          <h2>Start with one workflow.</h2>
+        </div>
+        <p>Pick the task you repeat every week. The skill will help you make it verifiable before it makes it fancy.</p>
+      </div>
+      <div class="install-box">
+        <div class="install-head"><span>terminal</span><button class="copy" id="copyBtn">COPY</button></div>
+        <pre class="code" id="installCode"><span class="c"># 1. install</span>
+git clone https://github.com/zhoujinq/growing-assistant-skill.git
+cp -r growing-assistant-skill/skills/growing-assistant ~/.workbuddy/skills/growing-assistant
+
+<span class="c"># 2. scaffold a workspace</span>
+cd ~/.workbuddy/skills/growing-assistant
+python scripts/init_assistant.py --root ./assistant --name "My Assistant"
+python scripts/lint_assistant.py --root ./assistant
+
+<span class="c"># 3. ask your Agent</span>
+<span class="blue">“Build my growing assistant. Start with the first workflow: &lt;your repeated task&gt;.”</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="notes">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="kicker">DESIGN NOTES</p>
+          <h2>Small on purpose.</h2>
+        </div>
+        <p>Three ideas from the GSE labs, stripped of course-specific parts.</p>
+      </div>
+      <div class="notes">
+        <div class="note-card"><div class="lab">LAB 1 / STATE</div><h3>Save the correction</h3><p>A successful flow and a correction must become a readable file. Chat is not memory. Git is.</p></div>
+        <div class="note-card"><div class="lab">LAB 2 / EFFORT</div><h3>Pay for checks</h3><p>High effort is solve → check → revise, not a longer answer. Keep the best version in the workspace.</p></div>
+        <div class="note-card"><div class="lab">LAB 3 / TASTE</div><h3>Build the benchmark</h3><p>Without good/bad cases, “grow” is just a promise. Each correction adds one case you can re-run.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>Growing Assistant v0.1.0 · MIT · built for file-capable Agents</span>
+    <span><a href="https://github.com/zhoujinq/growing-assistant-skill" target="_blank" rel="noreferrer">github.com/zhoujinq/growing-assistant-skill ↗</a></span>
+  </div>
+</footer>
+
+<script>
+  const lines = [
+    ['p','$ npx skills add zhoujinq/growing-assistant-skill'],
+    ['ok','✓ installed  growing-assistant v0.1.0'],
+    ['p','$ build my growing assistant'],
+    ['info','? What do you do?  →  “I sell technical products overseas.”'],
+    ['info','? What repeats every week?  →  “Tailoring my resume to a JD.”'],
+    ['info','? What does done look like?  →  “A cited report + a diff.”'],
+    ['ok','✓ assistant/PROFILE.md'],
+    ['ok','✓ assistant/WORKFLOW.md'],
+    ['p','$ run first workflow'],
+    ['ok','✓ output/2026-11-19-review-jd/report.md'],
+    ['warn','! correction: “don’t write ‘负责’ when it was ‘协助’.”'],
+    ['ok','✓ RULES.md  +  evals/E-002.md'],
+    ['p','$ run again'],
+    ['ok','✓ same task. better. evidence attached.'],
+    ['p','$ _']
+  ];
+  const term = document.getElementById('term');
+  let i = 0;
+  function render(){
+    term.innerHTML = lines.slice(0, i).map(([c,t]) => `<span class="${c}">${t.replace(/</g,'&lt;')}</span>`).join('\n') + (i < lines.length ? '\n<span class="cursor"></span>' : '');
+  }
+  function tick(){
+    if (i < lines.length){ i++; render(); setTimeout(tick, i < 4 ? 420 : 260); }
+  }
+  render(); setTimeout(tick, 500);
+
+  const steps = [...document.querySelectorAll('.step')];
+  steps.forEach(s => s.addEventListener('click', () => {
+    steps.forEach(x => x.classList.remove('active'));
+    s.classList.add('active');
+  }));
+
+  const copyBtn = document.getElementById('copyBtn');
+  copyBtn.addEventListener('click', async () => {
+    const text = document.getElementById('installCode').innerText;
+    try{ await navigator.clipboard.writeText(text); copyBtn.textContent = 'COPIED'; setTimeout(()=>copyBtn.textContent='COPY',1600); }
+    catch(e){ copyBtn.textContent = 'SELECT'; }
+  });
+</script>
+</body>
+</html>
