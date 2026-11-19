@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Growing Assistant — a skill of skills</title>
-<meta name="description" content="A portable skill that bootstraps a personal, growing AI assistant: profile, workspace, first workflow, correction loop, effort.">
+<title>成长助手 — 一个“技能中的技能”</title>
+<meta name="description" content="一个可移植的 meta-skill：帮你搭出有档案、工作区、真实工作流和纠正闭环的个人助手，越用越像你。">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
   :root{
@@ -17,8 +17,8 @@
     --blue:#8bd3ff;
     --paper:#f3efe6;
     --paper-ink:#171a18;
-    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
-    --sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --mono:ui-monospace,"Cascadia Code","Microsoft YaHei",SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:"Inter","PingFang SC","Microsoft YaHei",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -150,12 +150,12 @@
 
 <header class="nav">
   <div class="wrap nav-inner">
-    <a class="brand" href="#top"><span class="dot"></span> growing-assistant <span class="muted">/ v0.1.0</span></a>
+    <a class="brand" href="#top"><span class="dot"></span> 成长助手 <span class="muted">/ growing-assistant v0.1.0</span></a>
     <nav class="nav-links">
-      <a href="#loop">Loop</a>
-      <a href="#before-after">Before / after</a>
-      <a href="#inside">Inside</a>
-      <a href="#install">Install</a>
+      <a href="#loop">循环</a>
+      <a href="#before-after">前后对比</a>
+      <a href="#inside">内部结构</a>
+      <a href="#install">安装</a>
       <a class="nav-cta" href="https://github.com/zhoujinq/growing-assistant-skill" target="_blank" rel="noreferrer">GitHub ↗</a>
     </nav>
   </div>
@@ -165,22 +165,22 @@
   <div class="wrap">
     <section class="hero" style="border-top:0">
       <div class="hero-copy">
-        <p class="eyebrow">A SKILL OF SKILLS · MIT</p>
-        <h1>Your Agent,<br><span>but it grows.</span></h1>
-        <p class="lede">Give it to your Agent. Answer a few questions. Get a personal assistant with a workspace, a real workflow, and a correction loop that survives the next session.</p>
+        <p class="eyebrow">一个“技能中的技能” · MIT</p>
+        <h1>你的 Agent，<br><span>可以长大。</span></h1>
+        <p class="lede">把它丢给你的 Agent。回答几个问题，得到一个有工作区、有真实工作流、有纠正闭环的个人助手。下次新会话，它还记得。</p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#install">Install the skill →</a>
-          <a class="btn btn-ghost" href="https://github.com/zhoujinq/growing-assistant-skill" target="_blank" rel="noreferrer">View source ↗</a>
+          <a class="btn btn-primary" href="#install">安装这个 skill →</a>
+          <a class="btn btn-ghost" href="https://github.com/zhoujinq/growing-assistant-skill" target="_blank" rel="noreferrer">查看源码 ↗</a>
         </div>
         <div class="stats">
-          <div><b>5–8</b> questions to start</div>
-          <div><b>1</b> workflow, end-to-end</div>
-          <div><b>1</b> correction → rule → eval</div>
+          <div><b>5–8</b> 个问题起步</div>
+          <div><b>1</b> 条端到端工作流</div>
+          <div><b>1</b> 次纠正 → 规则 → 评测</div>
         </div>
       </div>
 
       <div class="terminal" aria-label="Terminal demo">
-        <div class="term-bar"><i></i><i></i><i></i><span class="term-title">~/assistant — growing-assistant</span></div>
+        <div class="term-bar"><i></i><i></i><i></i><span class="term-title">~/assistant — 成长助手</span></div>
         <pre class="term-body" id="term"></pre>
       </div>
     </section>
@@ -190,17 +190,17 @@
     <div class="wrap">
       <div class="section-head">
         <div>
-          <p class="kicker">THE LOOP</p>
-          <h2>One loop. Not a platform.</h2>
+          <p class="kicker">循环</p>
+          <h2>一个循环，不是平台。</h2>
         </div>
-        <p>Each step leaves a file. If it is not on disk, it does not exist. That is the whole trick.</p>
+        <p>每一步都留下一个文件。没落到磁盘上，就等于不存在。整套东西就靠这个。</p>
       </div>
       <div class="steps" id="steps">
-        <div class="step active" data-step="1"><div class="n">01 / PROFILE</div><h3>Ask, don’t assume</h3><p>Who, goals, one repeated task, acceptance, privacy. 5–8 questions, one at a time.</p></div>
-        <div class="step" data-step="2"><div class="n">02 / WORKSPACE</div><h3>Give it a desk</h3><p><code>PROFILE.md</code>, <code>RULES.md</code>, <code>memory/</code>, <code>docs/</code>, <code>evals/</code>. Local, readable, git-friendly.</p></div>
-        <div class="step" data-step="3"><div class="n">03 / FIRST RUN</div><h3>Do one real task</h3><p>An artifact, an evidence file, a handoff. No “here’s a plan” theatre.</p></div>
-        <div class="step" data-step="4"><div class="n">04 / CORRECTION</div><h3>Make it stick</h3><p>“That’s wrong” becomes a numbered rule + an eval case, not a one-off apology.</p></div>
-        <div class="step" data-step="5"><div class="n">05 / EFFORT</div><h3>Choose the budget</h3><p><code>low</code> / <code>medium</code> / <code>high</code>. High means more checks, not more words.</p></div>
+        <div class="step active" data-step="1"><div class="n">01 / 档案</div><h3>先问，不要猜</h3><p>你是谁、要什么、哪件事每周重复、做完什么样、哪些不能看。5–8 个问题，一次一个。</p></div>
+        <div class="step" data-step="2"><div class="n">02 / 工作区</div><h3>给它一张桌子</h3><p><code>PROFILE.md</code>、<code>RULES.md</code>、<code>memory/</code>、<code>docs/</code>、<code>evals/</code>。本地、可读、能进 Git。</p></div>
+        <div class="step" data-step="3"><div class="n">03 / 首跑</div><h3>做一件真事</h3><p>一个产物、一份证据、一段交接。不要“我给你一个计划”的表演。</p></div>
+        <div class="step" data-step="4"><div class="n">04 / 纠正</div><h3>让它记住</h3><p>“这不对”要变成一条编号规则 + 一个评测案例，而不是一句一次性的道歉。</p></div>
+        <div class="step" data-step="5"><div class="n">05 / 努力档</div><h3>选预算</h3><p><code>low</code> / <code>medium</code> / <code>high</code>。高档等于多检查，不是多写字。</p></div>
       </div>
     </div>
   </section>
@@ -209,33 +209,33 @@
     <div class="wrap">
       <div class="section-head">
         <div>
-          <p class="kicker">BEFORE / AFTER</p>
-          <h2>The second run is the product.</h2>
+          <p class="kicker">前后对比</p>
+          <h2>第二次运行，才是产品。</h2>
         </div>
-        <p>A generic agent answers. A growing assistant cites your files, follows your rules, and shows what changed.</p>
+        <p>普通 Agent 给答案。会长大的助手会引用你的文件、遵守你的规则，并告诉你哪里变了。</p>
       </div>
       <div class="compare">
         <div class="panel bad">
-          <div class="tag">Generic agent</div>
-          <h3>“Here’s a polished answer.”</h3>
+          <div class="tag">普通 Agent</div>
+          <h3>“这是一份漂亮的回答。”</h3>
           <ul>
-            <li>Starts from zero every session.</li>
-            <li>Invents a plausible number.</li>
-            <li>Forgets the correction by tomorrow.</li>
-            <li>No evidence, no rollback.</li>
+            <li>每次会话都从零开始。</li>
+            <li>编一个看起来合理的数字。</li>
+            <li>明天就忘了你纠正过什么。</li>
+            <li>没有证据，也没法回滚。</li>
           </ul>
-          <div class="quote">chat history ≠ memory</div>
+          <div class="quote">聊天记录 ≠ 记忆</div>
         </div>
         <div class="panel good">
-          <div class="tag">Growing assistant</div>
-          <h3>“Here’s the same task, with your rule.”</h3>
+          <div class="tag">会长大的助手</div>
+          <h3>“同一个任务，加上你的规则。”</h3>
           <ul>
-            <li>Reads <strong>PROFILE.md</strong> and <strong>RULES.md</strong> first.</li>
-            <li>Cites <strong>docs/resume.md#experience</strong>.</li>
-            <li>Rule <strong>R-002</strong> prevents “负责” when it was “协助”.</li>
-            <li>Re-runs <strong>E-002</strong> and shows the diff.</li>
+            <li>先读 <strong>PROFILE.md</strong> 和 <strong>RULES.md</strong>。</li>
+            <li>引用 <strong>docs/resume.md#experience</strong>。</li>
+            <li>用 <strong>R-002</strong> 拦住“负责”，因为原文只是“协助”。</li>
+            <li>重跑 <strong>E-002</strong>，并把 diff 给你看。</li>
           </ul>
-          <div class="quote">the correction is in the repo, not in the chat</div>
+          <div class="quote">纠正在仓库里，不在聊天里</div>
         </div>
       </div>
     </div>
@@ -245,30 +245,30 @@
     <div class="wrap">
       <div class="inside">
         <div>
-          <p class="kicker">INSIDE</p>
-          <h2 style="margin-bottom:18px">A workspace you can read.</h2>
+          <p class="kicker">内部结构</p>
+          <h2 style="margin-bottom:18px">一个你能读懂的工作区。</h2>
           <div class="tree">
 <span class="dir">assistant/</span>
-├─ <span class="file">PROFILE.md</span>      <span class="note"># who, goals, privacy</span>
-├─ <span class="file">RULES.md</span>        <span class="note"># one rule per correction</span>
-├─ <span class="file">WORKFLOW.md</span>     <span class="note"># inputs, steps, acceptance</span>
-├─ <span class="dir">memory/</span>         <span class="note"># dated notes, open loops</span>
-├─ <span class="dir">docs/</span>           <span class="note"># read-only source material</span>
-├─ <span class="dir">evals/</span>          <span class="note"># good/bad cases</span>
-├─ <span class="dir">output/</span>         <span class="note"># report + evidence + handoff</span>
-├─ <span class="dir">skills/</span>         <span class="note"># distilled standalone skills</span>
-└─ <span class="dir">private/</span>        <span class="note"># gitignored</span>
+├─ <span class="file">PROFILE.md</span>      <span class="note"># 你是谁、目标、隐私</span>
+├─ <span class="file">RULES.md</span>        <span class="note"># 一次纠正一条规则</span>
+├─ <span class="file">WORKFLOW.md</span>     <span class="note"># 输入、步骤、验收</span>
+├─ <span class="dir">memory/</span>         <span class="note"># 日期笔记、未决事项</span>
+├─ <span class="dir">docs/</span>           <span class="note"># 只读源材料</span>
+├─ <span class="dir">evals/</span>          <span class="note"># 好/坏案例</span>
+├─ <span class="dir">output/</span>         <span class="note"># 报告 + 证据 + 交接</span>
+├─ <span class="dir">skills/</span>         <span class="note"># 蒸馏出的独立 skill</span>
+└─ <span class="dir">private/</span>        <span class="note"># 不进 Git</span>
           </div>
         </div>
         <div class="inside-copy">
-          <p><strong>No database server.</strong> Markdown + folders. You can read it, edit it, diff it, and put it in Git.</p>
-          <p><strong>No model lock-in.</strong> The skill runs in any Agent that can read/write files and run Python. WorkBuddy, Claude Code, Codex, Pi.</p>
-          <p><strong>No multi-agent ceremony.</strong> One assistant first. Roles are a later option, not the starting point.</p>
+          <p><strong>没有数据库服务。</strong>Markdown + 文件夹。你能读、能改、能 diff、能进 Git。</p>
+          <p><strong>不锁模型。</strong>只要能读写文件、能跑 Python 的 Agent 都能用：WorkBuddy、Claude Code、Codex、Pi。</p>
+          <p><strong>不搞多 Agent 仪式。</strong>先做一个助手。角色是后面的选项，不是起点。</p>
           <div class="kpis">
-            <div class="kpi"><b>0</b><span>external Python packages</span></div>
-            <div class="kpi"><b>3</b><span>gates: profile / first run / growth</span></div>
-            <div class="kpi"><b>2</b><span>example workflows included</span></div>
-            <div class="kpi"><b>1</b><span>command to scaffold</span></div>
+            <div class="kpi"><b>0</b><span>个外部 Python 包</span></div>
+            <div class="kpi"><b>3</b><span>道门：档案 / 首跑 / 成长</span></div>
+            <div class="kpi"><b>2</b><span>个示例工作流</span></div>
+            <div class="kpi"><b>1</b><span>条命令搭好骨架</span></div>
           </div>
         </div>
       </div>
@@ -279,24 +279,24 @@
     <div class="wrap">
       <div class="section-head">
         <div>
-          <p class="kicker">INSTALL</p>
-          <h2>Start with one workflow.</h2>
+          <p class="kicker">安装</p>
+          <h2>从一条工作流开始。</h2>
         </div>
-        <p>Pick the task you repeat every week. The skill will help you make it verifiable before it makes it fancy.</p>
+        <p>选你每周都在重复的那件事。这个 skill 会先帮你把它变得可验收，再谈漂亮。</p>
       </div>
       <div class="install-box">
-        <div class="install-head"><span>terminal</span><button class="copy" id="copyBtn">COPY</button></div>
-        <pre class="code" id="installCode"><span class="c"># 1. install</span>
+        <div class="install-head"><span>终端</span><button class="copy" id="copyBtn">复制</button></div>
+        <pre class="code" id="installCode"><span class="c"># 1. 安装</span>
 git clone https://github.com/zhoujinq/growing-assistant-skill.git
 cp -r growing-assistant-skill/skills/growing-assistant ~/.workbuddy/skills/growing-assistant
 
-<span class="c"># 2. scaffold a workspace</span>
+<span class="c"># 2. 搭工作区</span>
 cd ~/.workbuddy/skills/growing-assistant
-python scripts/init_assistant.py --root ./assistant --name "My Assistant"
+python scripts/init_assistant.py --root ./assistant --name "我的助手"
 python scripts/lint_assistant.py --root ./assistant
 
-<span class="c"># 3. ask your Agent</span>
-<span class="blue">“Build my growing assistant. Start with the first workflow: &lt;your repeated task&gt;.”</span></pre>
+<span class="c"># 3. 对你的 Agent 说</span>
+<span class="blue">“帮我搭一个会长大的助手。从第一条工作流开始：&lt;你每周重复的那件事&gt;。”</span></pre>
       </div>
     </div>
   </section>
@@ -305,15 +305,15 @@ python scripts/lint_assistant.py --root ./assistant
     <div class="wrap">
       <div class="section-head">
         <div>
-          <p class="kicker">DESIGN NOTES</p>
-          <h2>Small on purpose.</h2>
+          <p class="kicker">设计注记</p>
+          <h2>故意做小。</h2>
         </div>
-        <p>Three ideas from the GSE labs, stripped of course-specific parts.</p>
+        <p>来自 GSE 实验的三个想法，去掉了课程特定的部分。</p>
       </div>
       <div class="notes">
-        <div class="note-card"><div class="lab">LAB 1 / STATE</div><h3>Save the correction</h3><p>A successful flow and a correction must become a readable file. Chat is not memory. Git is.</p></div>
-        <div class="note-card"><div class="lab">LAB 2 / EFFORT</div><h3>Pay for checks</h3><p>High effort is solve → check → revise, not a longer answer. Keep the best version in the workspace.</p></div>
-        <div class="note-card"><div class="lab">LAB 3 / TASTE</div><h3>Build the benchmark</h3><p>Without good/bad cases, “grow” is just a promise. Each correction adds one case you can re-run.</p></div>
+        <div class="note-card"><div class="lab">实验 1 / 状态</div><h3>把纠正存下来</h3><p>一次成功的流程、一次纠正，都要变成可读文件。聊天不是记忆，Git 才是。</p></div>
+        <div class="note-card"><div class="lab">实验 2 / 努力</div><h3>为检查付费</h3><p>高 effort 是“求解 → 检查 → 修改”，不是把答案写长。把当前最好版本留在工作区。</p></div>
+        <div class="note-card"><div class="lab">实验 3 / 品味</div><h3>建评测集</h3><p>没有好/坏案例，“成长”只是一句承诺。每次纠正加一个能重跑的案例。</p></div>
       </div>
     </div>
   </section>
@@ -321,7 +321,7 @@ python scripts/lint_assistant.py --root ./assistant
 
 <footer>
   <div class="wrap foot">
-    <span>Growing Assistant v0.1.0 · MIT · built for file-capable Agents</span>
+    <span>成长助手 v0.1.0 · MIT · 给能读写文件的 Agent 用</span>
     <span><a href="https://github.com/zhoujinq/growing-assistant-skill" target="_blank" rel="noreferrer">github.com/zhoujinq/growing-assistant-skill ↗</a></span>
   </div>
 </footer>
@@ -329,19 +329,19 @@ python scripts/lint_assistant.py --root ./assistant
 <script>
   const lines = [
     ['p','$ npx skills@latest add zhoujinq/growing-assistant-skill --skill=growing-assistant'],
-    ['ok','✓ installed  growing-assistant v0.1.0'],
-    ['p','$ build my growing assistant'],
-    ['info','? What do you do?  →  “I sell technical products overseas.”'],
-    ['info','? What repeats every week?  →  “Tailoring my resume to a JD.”'],
-    ['info','? What does done look like?  →  “A cited report + a diff.”'],
+    ['ok','✓ 已安装  growing-assistant v0.1.0'],
+    ['p','$ 帮我搭一个会长大的助手'],
+    ['info','? 你是做什么的？  →  “我在海外卖技术产品。”'],
+    ['info','? 每周重复做什么？  →  “按 JD 改简历。”'],
+    ['info','? 做完是什么样？  →  “一份带引用的报告 + 一个 diff。”'],
     ['ok','✓ assistant/PROFILE.md'],
     ['ok','✓ assistant/WORKFLOW.md'],
-    ['p','$ run first workflow'],
+    ['p','$ 跑第一个工作流'],
     ['ok','✓ output/2026-11-19-review-jd/report.md'],
-    ['warn','! correction: “don’t write ‘负责’ when it was ‘协助’.”'],
+    ['warn','! 纠正：“是‘协助’，不要写成‘负责’。”'],
     ['ok','✓ RULES.md  +  evals/E-002.md'],
-    ['p','$ run again'],
-    ['ok','✓ same task. better. evidence attached.'],
+    ['p','$ 再跑一次'],
+    ['ok','✓ 同一个任务，更好。证据已附。'],
     ['p','$ _']
   ];
   const term = document.getElementById('term');
@@ -363,8 +363,8 @@ python scripts/lint_assistant.py --root ./assistant
   const copyBtn = document.getElementById('copyBtn');
   copyBtn.addEventListener('click', async () => {
     const text = document.getElementById('installCode').innerText;
-    try{ await navigator.clipboard.writeText(text); copyBtn.textContent = 'COPIED'; setTimeout(()=>copyBtn.textContent='COPY',1600); }
-    catch(e){ copyBtn.textContent = 'SELECT'; }
+    try{ await navigator.clipboard.writeText(text); copyBtn.textContent = '已复制'; setTimeout(()=>copyBtn.textContent='复制',1600); }
+    catch(e){ copyBtn.textContent = '请手动选择'; }
   });
 </script>
 </body>

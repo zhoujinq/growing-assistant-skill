@@ -4,6 +4,8 @@
 
 **Demo page:** https://zhoujinq.github.io/growing-assistant-skill/
 
+**Skill entry:** [`skills/growing-assistant/SKILL.md`](skills/growing-assistant/SKILL.md)
+
 ## What it is
 
 Most “personal AI” setups are a prompt and a chat history. This skill builds the missing layer:
