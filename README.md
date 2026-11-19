@@ -38,6 +38,14 @@ git clone https://github.com/zhoujinq/growing-assistant-skill.git
 cp -r growing-assistant-skill/skills/growing-assistant ~/.workbuddy/skills/growing-assistant
 ```
 
+Windows PowerShell:
+
+```powershell
+git clone https://github.com/zhoujinq/growing-assistant-skill.git
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.workbuddy\skills" | Out-Null
+Copy-Item -Recurse .\growing-assistant-skill\skills\growing-assistant "$env:USERPROFILE\.workbuddy\skills\growing-assistant"
+```
+
 Restart WorkBuddy; the skill will be available.
 
 ### skills CLI
@@ -45,6 +53,8 @@ Restart WorkBuddy; the skill will be available.
 ```bash
 npx skills@latest add zhoujinq/growing-assistant-skill --skill=growing-assistant
 ```
+
+If the CLI is unavailable, use the git clone path above; it is the tested path (Python 3.11+, stdlib only).
 
 ## Quick start
 
